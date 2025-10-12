@@ -1,0 +1,111 @@
+Little Man Computer programs
+https://peterhigginson.co.uk/LMC/?F5=08-Oct-25_20:19:49
+
+; 1. Suma a doua numere
+        INP
+        STA A
+        INP
+        STA B
+        ADD A
+        OUT
+        HLT
+A       DAT
+B       DAT
+
+
+; 2. Afisarea numerelor de la 0 la n [0,N]
+	INP
+        STA N
+LOOP    LDA COUNTER
+        OUT COUNTER
+        ADD ONE
+        STA COUNTER
+        LDA N 
+        SUB COUNTER
+        BRP LOOP
+        HLT
+N       DAT
+COUNTER DAT 0
+ONE     DAT 1
+
+; 3. INMULTIRE
+        INP
+        STA A
+        INP
+        STA B
+        LDA B
+        SUB ONE
+LOOP    LDA RESULT
+        ADD A
+        STA RESULT
+        LDA B
+        SUB ONE
+        STA B
+        BRP LOOP
+        LDA RESULT
+        OUT RESULT
+        HLT
+A       DAT
+B       DAT
+ONE     DAT 1
+RESULT  DAT 0
+
+; 4. Ridicarea la putere
+
+; 5. Media aritmetica a numerelor de la 0 la n
+        INP
+        ADD ONE
+        STA N
+loop    LDA SUM 
+        ADD COUNTER
+        STA SUM
+        LDA COUNTER
+        ADD ONE
+        STA COUNTER
+        SUB N
+        BRZ loopEnd
+        BRA loop
+loopEnd LDA N
+        SUB ONE
+        STA N
+        LDA ZERO
+        STA COUNTER
+divLoop LDA SUM
+        SUB N
+        STA SUM
+        LDA COUNTER
+        ADD ONE
+        STA COUNTER
+        LDA SUM
+        BRZ endDiv
+        BRP divLoop
+endDiv  LDA COUNTER
+        OUT
+        HLT
+N       DAT
+SUM     DAT 0
+COUNTER DAT 1
+ONE     DAT 1
+ZERO    DAT 0
+
+-sau-
+
+        INP
+        ADD ONE
+        STA N
+divLoop LDA N
+        SUB TWO
+        STA N
+        LDA COUNTER
+        ADD ONE
+        STA COUNTER
+        LDA N
+        BRZ endDiv
+        BRP divLoop
+endDiv  LDA COUNTER
+        OUT
+        HLT
+N       DAT
+COUNTER DAT 0
+ONE     DAT 1
+TWO     DAT 2
