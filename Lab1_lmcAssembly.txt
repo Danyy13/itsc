@@ -51,61 +51,89 @@ ONE     DAT 1
 RESULT  DAT 0
 
 ; 4. Ridicarea la putere
-
-; 5. Media aritmetica a numerelor de la 0 la n
         INP
-        ADD ONE
-        STA N
-loop    LDA SUM 
-        ADD COUNTER
-        STA SUM
-        LDA COUNTER
-        ADD ONE
-        STA COUNTER
-        SUB N
-        BRZ loopEnd
-        BRA loop
-loopEnd LDA N
-        SUB ONE
-        STA N
-        LDA ZERO
-        STA COUNTER
-divLoop LDA SUM
-        SUB N
-        STA SUM
-        LDA COUNTER
-        ADD ONE
-        STA COUNTER
-        LDA SUM
-        BRZ endDiv
-        BRP divLoop
-endDiv  LDA COUNTER
+        STA a
+        BRZ instA0
+        STA counter
+        SUB one
+        BRZ instA1
+        STA aMinOne
+        INP
+        BRZ instB0
+        SUB one
+        BRZ end
+        STA b
+        BRA loopMul
+loopPow LDA aMinOne
+        STA counter
+loopMul LDA resMul
+        ADD a
+        STA resMul
+        LDA counter
+        SUB one
+        STA counter
+        BRZ endMul
+        BRA loopMul
+endMul  LDA resMul
+        STA a
+        LDA b
+        SUB one
+        STA b
+        BRZ end
+        BRA loopPow
+instA0  OUT
+        HLT
+instA1  ADD one
         OUT
         HLT
-N       DAT
-SUM     DAT 0
-COUNTER DAT 1
-ONE     DAT 1
-ZERO    DAT 0
-
--sau-
-
-        INP
-        ADD ONE
-        STA N
-divLoop LDA N
-        SUB TWO
-        STA N
-        LDA COUNTER
-        ADD ONE
-        STA COUNTER
-        LDA N
-        BRZ endDiv
-        BRP divLoop
-endDiv  LDA COUNTER
+instB0  LDA one
         OUT
         HLT
-N       DAT
-COUNTER DAT 0
-ONE     DAT 1
-TWO     DAT 2
+end     LDA a
+        OUT
+        HLT
+a       DAT
+b       DAT
+counter DAT 0
+resMul  DAT
+one     DAT 1
+aMinOne DAT
+
+; 5. Media aritmetica a numerelor de la A la B
+; Se poate calcula ca si (A + B) / 2
+; Deci putem avea doar .00 si .50 ca rezultat
+        INP
+        STA a
+        INP
+        ADD a 
+        STA b ;am in b suma
+loop    SUB two
+        STA b
+        LDA counter
+        ADD one
+        STA counter
+        LDA b
+        SUB one
+        BRZ rest1
+        ADD one
+        BRZ endLoop
+        BRP loop
+rest1   LDA fifty
+        STA rest
+endLoop LDA counter
+        OUT
+        LDA punct
+        OTC
+        LDA rest
+        OUT
+        HLT
+a       DAT
+b       DAT
+two     DAT 2
+counter DAT 0
+one     DAT 1
+fifty   DAT 50
+rest    DAT 0
+punct   DAT 46
+
+
