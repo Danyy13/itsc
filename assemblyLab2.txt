@@ -6,6 +6,7 @@
         MLX R1, R2
         SUB R1, R1, R3
         ADD R1, R1, R4
+        OUT R1
         HLT
 
 ; Afisare de la 0 la n
@@ -78,7 +79,6 @@ output  OUT R2, 4
 end     HLT
 
 ; 6. Read n, output first n terms of Fibonacci sequence
-
         INP R1, 2
         MOV R2, #1
         OUT R2, 4
