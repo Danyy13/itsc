@@ -3,6 +3,7 @@ a) Read array, takes param(N), reads numbers until 0 is input and stores them co
         INP R0, 2
         MOV R7, R0
         JMS readArr
+	HLT
 readArr INP R1, 2
         CMP R1, #0
         BEQ rdLpEnd
@@ -17,6 +18,17 @@ b) Print array, takes 2 params(N = starting position, M = array length) and outp
         INP R0, 2
         MOV R7, R0
         JMS readArr
+	JMS printArr
+	HLT
+readArr INP R1, 2
+        CMP R1, #0
+        BEQ rdLpEnd
+        STR R1, 0(R0)
+        ADD R0, #1
+        BRA readArr
+rdLpEnd MOV R6, R0
+        SUB R6, R6, R7
+        RET
 printArr MOV R0, R7
         MOV R2, R6
 prLp    LDR R1, 0(R0)
@@ -31,6 +43,17 @@ c) minmax: Takes (N, M); returns min and max value of array starting at N
         INP R0, 2
         MOV R7, R0
         JMS readArr
+	JMS minmax
+	HLT
+readArr INP R1, 2
+        CMP R1, #0
+        BEQ rdLpEnd
+        STR R1, 0(R0)
+        ADD R0, #1
+        BRA readArr
+rdLpEnd MOV R6, R0
+        SUB R6, R6, R7
+        RET
 minmax  MOV R0, R7
         MOV R2, R6
         LDR R5, 0(R0)
@@ -53,12 +76,65 @@ mmEnd   OUT R5
         OUT R4
         RET
 
-d) Print value: Receives 1 param, outputs param test with c
+d) Print value: Receives 1 param, outputs param. Test with values from c
+        INP R0, 2
+        MOV R7, R0
+        JMS readArr
+        JMS minmax
+        HLT
+readArr INP R1, 2
+        CMP R1, #0
+        BEQ rdLpEnd
+        STR R1, 0(R0)
+        ADD R0, #1
+        BRA readArr
+rdLpEnd MOV R6, R0
+        SUB R6, R6, R7
+        RET
+minmax  MOV R0, R7
+        MOV R2, R6
+        LDR R5, 0(R0)
+        MOV R4, R5
+mmLoop  ADD R0, #1
+        SUB R2, #1
+        CMP R2, #0
+        BEQ mmEnd
+        LDR R3, 0(R0)
+        CMP R3, R5
+        BGT gt
+        BRA notGt
+gt      MOV R5, R3
+notGt   CMP R3, R4
+        BLT lt
+        BRA notLt
+lt      MOV R4, R3
+notLt   BRA mmLoop
+mmEnd   PSH {LR}
+        PSH R4
+        JMS prVal
+        PSH R5
+        JMS prVal
+        POP {PC}
+        RET
+prVal   POP R3
+        OUT R3
+        RET
 
 e) Duplicate array: Params (N, M, K); Duplicates array of length M starting at N into K (K = starting position in memory), eliminating min and max values
         INP R0, 2
         MOV R7, R0
         JMS readArr
+	JMS dup
+	HLT
+readArr INP R1, 2
+        CMP R1, #0
+        BEQ rdLpEnd
+        STR R1, 0(R0)
+        ADD R0, #1
+        BRA readArr
+rdLpEnd MOV R6, R0
+        SUB R6, R6, R7
+        RET
 dup     MOV R0, R7
         MOV R2, R6
         INP R1, 2
@@ -71,6 +147,38 @@ dupLoop LDR R3, 0(R0)
         BEQ dupLpEnd
         BRA dupLoop
 dupLpEnd RET
+
+; Implementare cu stiva
+        INP R0, 2
+        MOV R7, R0
+        JMS readArr
+        PSH R7
+        PSH R6
+        INP R5, 2
+        PSH R5
+        JMS dup
+        HLT
+readArr INP R1, 2
+        CMP R1, #0
+        BEQ rdLpEnd
+        STR R1, 0(R0)
+        ADD R0, #1
+        BRA readArr
+rdLpEnd MOV R6, R0
+        SUB R6, R6, R7
+        RET
+dup     POP R2
+        POP R1
+        POP R0
+dpLp    LDR R3, 0(R0)
+        STR R3, 0(R2)
+        ADD R0, #1
+        ADD R2, #1
+        SUB R1, #1
+        CMP R1, #0
+        BEQ dpEndLp
+        BRA dpLp
+dpEndLp RET
 
 f) Factorial: Params (N); calculates factorial(N) recursively through stack; returns factorial(N)
         INP R0, 2 
@@ -155,6 +263,32 @@ for procedures:
 JMS <label> -> jump to subroutine start
 RET -> return from procedure
 */
+
+; Bubble Sort
+        INP R0, 2
+        MOV R7, R0
+        JMS readArr
+        JMS bubble
+        HLT
+readArr INP R1, 2
+        CMP R1, #0
+        BEQ rdLpEnd
+        STR R1, 0(R0)
+        ADD R0, #1
+        BRA readArr
+rdLpEnd MOV R6, R0
+        SUB R6, R6, R7
+        RET
+bubble  MOV R0, R7
+        MOV R1, R6
+bbOuter LDR R2, 0(R0)
+        OUT R2
+        ADD R0, #1
+        SUB R1, #1
+        CMP R1, #0
+        BEQ bbEnd
+        BRA bbOuter
+bbEnd   RET
 
 
 
