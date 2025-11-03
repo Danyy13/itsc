@@ -258,11 +258,6 @@ dupLoop LDR R3, 0(R0)
         BRA dupLoop
 dupLpEnd RET
 
-/*
-for procedures:
-JMS <label> -> jump to subroutine start
-RET -> return from procedure
-*/
 
 ; Bubble Sort
         INP R0, 2
@@ -280,15 +275,35 @@ rdLpEnd MOV R6, R0
         SUB R6, R6, R7
         RET
 bubble  MOV R0, R7
-        MOV R1, R6
-bbOuter LDR R2, 0(R0)
-        OUT R2
-        ADD R0, #1
-        SUB R1, #1
-        CMP R1, #0
+        MOV R1, #0
+        MOV R2, #0
+bbOuter MOV R0, R7
+        ADD R1, #1
+        CMP R1, R6
         BEQ bbEnd
-        BRA bbOuter
+        MOV R2, R6
+        SUB R2, R1
+bbInnr  CMP R2, #0
+        BEQ bbOuter
+        LDR R3, 0(R0)
+        LDR R4, 1(R0)
+        OUT R3
+        OUT R4
+        CMP R3, R4
+        BLE innrEnd
+        STR R4, 0(R0)
+        STR R3, 1(R0)
+innrEnd ADD R0, #1
+        SUB R2, #1
+        BRA bbInnr
 bbEnd   RET
+
+
+/*
+for procedures:
+JMS <label> -> jump to subroutine start
+RET -> return from procedure
+*/
 
 
 
